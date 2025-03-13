@@ -65,6 +65,8 @@ export class WSManager{
   private _createNewWS(){
     this._ws = new WebSocket(`ws://${this._adress}:${this._port}`);
 
+    console.log(`${this._id} - ${this._username}`);
+
     this._ws.on('open', this._onOpen.bind(this));
     this._ws.on('error', this._onError.bind(this));
     this._ws.on('message', this._onMessage.bind(this));
@@ -72,7 +74,6 @@ export class WSManager{
   }
 
   private _onClose(){
-    console.log('Connection closed, trying to reconnect...');
     setTimeout(() => {
       this._createNewWS();
     }, 5000);

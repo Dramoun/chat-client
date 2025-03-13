@@ -1,6 +1,6 @@
 import readline from "readline";
 
-import {WSManager} from './wsManager.js';
+import { WSManager } from './wsManager.js';
 
 const ws = new WSManager("localhost", 3333);
 
@@ -11,17 +11,19 @@ const rl = readline.createInterface({
 
 // Function to process user input
 const processInput = (input: string) => {
-  
   if (input === "exit") {
     console.log("Shutting down...");
     rl.close();
     process.exit(0);
   }
 
-  ws.sendChatMessage(input);
+  if (ws.isConnected) {
+    ws.sendChatMessage(input);
+  } else {
+    console.log("Not connected to the server.");
+  }
 };
 
-// Ask for input repeatedly
 rl.setPrompt("");
 rl.prompt();
 rl.on("line", (input) => {

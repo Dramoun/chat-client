@@ -6,12 +6,14 @@ export class WSManager{
   private _ws!: WebSocket;
   private _id: string = "";
   private _username: string = "";
+  public isConnected: boolean;
 
   constructor(
     private readonly _adress: string,
     private readonly _port: number
   ){
     this._createNewWS();
+    this.isConnected = false;
   }
 
   sendChatMessage(message: string){
@@ -47,6 +49,7 @@ export class WSManager{
 
     if ( parsedData.type === 'handshake' ){
       this._onHandshake(parsedData as HandShakeMessage);
+      this.isConnected = true;
     }
     else if ( parsedData.type === 'chat' ){
       this._onChat(parsedData as ChatMessage);
@@ -74,6 +77,7 @@ export class WSManager{
   }
 
   private _onClose(){
+    this.isConnected = false;
     setTimeout(() => {
       this._createNewWS();
     }, 5000);

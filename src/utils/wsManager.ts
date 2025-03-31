@@ -1,6 +1,4 @@
-import WebSocket from 'ws';
-
-import { HandShakeMessage, ChatMessage, WSMessage } from './types/wsManager.types';
+import { HandShakeMessage, ChatMessage, WSMessage } from './wsManager.types';
 
 export class WSManager{
   private _ws!: WebSocket;
@@ -10,13 +8,16 @@ export class WSManager{
 
   constructor(
     private readonly _adress: string,
-    private readonly _port: number
+    private readonly _port: number,
+    private chatMessageHandler: (message: ChatMessage) => void,
+    private handShakeMessageHandler: (message: HandShakeMessage) => void,
+    private handleWsErrorHandler: (error:Event) => void
   ){
     this._createNewWS();
     this.isConnected = false;
   }
 
-  sendChatMessage(message: string){
+  public sendChatMessage(message: string){
     const chatMessage: ChatMessage = {
       type: 'chat',
       id: this._id,
@@ -27,7 +28,7 @@ export class WSManager{
     this._ws.send(JSON.stringify(chatMessage));
   }
 
-  private _onOpen(){
+  public _onOpen(){
     const handshake: HandShakeMessage = {
       type: 'handshake',
       id: this._id,
@@ -37,30 +38,33 @@ export class WSManager{
     this._ws.send(JSON.stringify(handshake));
   }
 
-  private _onError(error: any){
-    console.error(`Error: ${error.message}`);
-    if (error.code === 'ECONNREFUSED'){
-      console.log('Connection refused, trying to reconnect in 5 seconds...');
-    }
+  // todo update on error to display we are not connected
+  private _onError(error: Event) {
+    console.error('WebSocket error:', error);
+    this.handleWsErrorHandler(error);
+    console.log('Attempting to reconnect in 5 seconds...');
   }
 
   private _onMessage(data: string){
     const parsedData = JSON.parse(data) as WSMessage;
 
     if ( parsedData.type === 'handshake' ){
-      this._onHandshake(parsedData as HandShakeMessage);
+      this.onHandshake(parsedData as HandShakeMessage);
+      this.handShakeMessageHandler(parsedData as HandShakeMessage);
       this.isConnected = true;
     }
     else if ( parsedData.type === 'chat' ){
       this._onChat(parsedData as ChatMessage);
+      this.chatMessageHandler(parsedData as ChatMessage)
     }
   }
 
-  private _onHandshake(data: HandShakeMessage){
+  public onHandshake(data: HandShakeMessage){
     this._id = data.id;
     this._username = data.name;
     console.log(`Connected as ${this._username}`);
   }
+  
   private _onChat(data: ChatMessage){
     console.log(`${data.name}: ${data.message}`);
   }
@@ -70,10 +74,10 @@ export class WSManager{
 
     console.log(`${this._id} - ${this._username}`);
 
-    this._ws.on('open', this._onOpen.bind(this));
-    this._ws.on('error', this._onError.bind(this));
-    this._ws.on('message', this._onMessage.bind(this));
-    this._ws.on('close', this._onClose.bind(this));
+    this._ws.addEventListener('open', this._onOpen.bind(this));
+    this._ws.addEventListener('error', this._onError.bind(this));
+    this._ws.addEventListener('message', (event) => this._onMessage(event.data));
+    this._ws.addEventListener('close', this._onClose.bind(this));
   }
 
   private _onClose(){

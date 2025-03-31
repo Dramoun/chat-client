@@ -1,0 +1,139 @@
+/* General Reset */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'OpenDyslexic', 'Comic Sans MS', Arial, sans-serif; /* ADHD-friendly font */
+  background-color: #1a1a1a; /* Softer dark mode background */
+  color: #a8d5e2; /* Softer teal text */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Chat Window */
+.chat-window {
+  width: 90%;
+  height: 85%;
+  background-color: #232323; /* Softer dark background */
+  border: 2px solid #5ac8d8; /* Softer teal border */
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  box-shadow: 0 0 15px #5ac8d8; /* Softer glow effect */
+}
+
+/* Chat History */
+.chat-history {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  background-color: #1e1e1e; /* Slightly darker for contrast */
+  border-radius: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Add spacing between messages */
+}
+
+/* Chat Message Styles */
+.chat-message {
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 70%;
+  word-wrap: break-word;
+  display: inline-block;
+}
+
+.chat-message.sent {
+  color: #5ac8d8; /* Softer teal for sent messages */
+  align-self: flex-end; /* Align to the right */
+  text-align: right;
+}
+
+.chat-message.received {
+  color: #d85ac8; /* Softer pink for received messages */
+  align-self: flex-start; /* Align to the left */
+  text-align: left;
+}
+
+/* Highlight the sender's name */
+.chat-name {
+  font-weight: bold;
+  color: #5f66c9; /* White for better contrast */
+  margin-bottom: 5px;
+}
+
+/* Style the message text */
+.chat-text {
+  color: inherit; /* Inherit color from the parent (sent or received) */
+}
+
+/* Input Section */
+.input-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #5ac8d8; /* Softer teal border */
+  border-radius: 8px;
+  background-color: #232323; /* Softer dark background */
+  color: #a8d5e2; /* Softer teal text */
+  resize: none; /* Prevent manual resizing */
+  overflow-y: hidden; /* Hide scrollbar while resizing */
+  line-height: 1.5; /* Adjust line spacing for better readability */
+  min-height: 20px; /* Minimum height for single-line input */
+  max-height: 150px; /* Limit the height for multi-line input */
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: #d85ac8; /* Softer pink focus */
+}
+
+.send-button {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #1a1a1a; /* Dark text */
+  background-color: #5ac8d8; /* Softer teal background */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.send-button:hover {
+  background-color: #d85ac8; /* Softer pink on hover */
+  transform: scale(1.05); /* Slight zoom effect */
+}
+
+.send-button:active {
+  transform: scale(0.95); /* Slight shrink on click */
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Softer semi-transparent dark overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #a8d5e2; /* Softer teal text */
+  font-size: 24px;
+  font-weight: bold;
+  z-index: 1000;
+}
